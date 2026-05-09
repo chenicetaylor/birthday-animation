@@ -213,16 +213,8 @@ function App() {
         </motion.button>
       ) : null}
       <div
-        role={canFlipToFront ? 'button' : 'presentation'}
-        tabIndex={canFlipToFront ? 0 : -1}
-        onClick={handleEnvelopeActivate}
-        onKeyDown={(e) => {
-          if (!canFlipToFront) return
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            handleEnvelopeActivate()
-          }
-        }}
+        role="presentation"
+        onClick={canFlipToFront ? handleEnvelopeActivate : undefined}
         style={{
           width: scaledW,
           height: scaledH,
@@ -231,10 +223,6 @@ function App() {
           overflow: 'visible',
           position: 'relative',
         }}
-        aria-label={
-          canFlipToFront ? 'Flip envelope to front' : 'Envelope front'
-        }
-        aria-disabled={!canFlipToFront}
       >
         <div
           style={{
@@ -276,7 +264,8 @@ function App() {
                 position: 'absolute',
                 inset: 0,
                 transformOrigin: 'center center',
-                pointerEvents: face === 'back' ? 'auto' : 'none',
+                /** Let the full-area flip control receive taps (fixes WebKit + 3D hit testing). */
+                pointerEvents: 'none',
               }}
             >
               <EnvelopeBack />
@@ -297,6 +286,29 @@ function App() {
                 onBackInviteRevealActive={onBackInviteRevealActive}
               />
             </motion.div>
+            {canFlipToFront ? (
+              <button
+                type="button"
+                aria-label="Flip envelope to front"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleEnvelopeActivate()
+                }}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  zIndex: 80,
+                  margin: 0,
+                  padding: 0,
+                  border: 'none',
+                  borderRadius: 0,
+                  cursor: 'pointer',
+                  background: 'transparent',
+                  WebkitTapHighlightColor: 'transparent',
+                  touchAction: 'manipulation',
+                }}
+              />
+            ) : null}
           </div>
           </div>
         </div>
