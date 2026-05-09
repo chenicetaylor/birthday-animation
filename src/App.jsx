@@ -258,44 +258,52 @@ function App() {
               overflow: 'visible',
             }}
           >
-          <motion.div
-            animate={{ rotateY: face === 'back' ? 0 : 180 }}
-            transition={flipTransition}
+          <div
             style={{
               position: 'relative',
               width: DESIGN_W,
               height: DESIGN_H,
               transformStyle: 'preserve-3d',
+              WebkitTransformStyle: 'preserve-3d',
               overflow: 'visible',
             }}
           >
-            <div
+            <motion.div
+              animate={{ rotateY: face === 'back' ? 0 : -180 }}
+              transition={flipTransition}
               style={{
                 position: 'absolute',
                 inset: 0,
+                transformStyle: 'preserve-3d',
+                WebkitTransformStyle: 'preserve-3d',
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden',
+                transformOrigin: 'center center',
                 overflow: 'visible',
               }}
             >
               <EnvelopeBack />
-            </div>
-            <div
+            </motion.div>
+            <motion.div
+              key={envelopeResetKey}
+              animate={{ rotateY: face === 'back' ? 180 : 0 }}
+              transition={flipTransition}
               style={{
                 position: 'absolute',
                 inset: 0,
+                transformStyle: 'preserve-3d',
+                WebkitTransformStyle: 'preserve-3d',
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden',
-                transform: 'rotateY(180deg)',
+                transformOrigin: 'center center',
                 overflow: 'visible',
               }}
             >
               <EnvelopeBody
-                key={envelopeResetKey}
                 onBackInviteRevealActive={onBackInviteRevealActive}
               />
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
           </div>
         </div>
       </div>

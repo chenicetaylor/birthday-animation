@@ -355,10 +355,14 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
   )
 
   const frameStyle = {
-    position: 'relative',
+    position: 'absolute',
+    inset: 0,
     width: '634px',
     height: '456px',
     transformStyle: 'preserve-3d',
+    WebkitTransformStyle: 'preserve-3d',
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden',
     /** Let the invite animate above the slot without clipping (temp). */
     overflow: 'visible',
     transformOrigin: '50% 55%',

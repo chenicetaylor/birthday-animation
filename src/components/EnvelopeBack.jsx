@@ -22,9 +22,12 @@ const labelStyle = {
 
 function EnvelopeBack() {
   const frameStyle = {
-    position: 'relative',
+    position: 'absolute',
+    inset: 0,
     width: '634px',
     height: '456px',
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden',
   }
 
   const imageCommonStyle = {
