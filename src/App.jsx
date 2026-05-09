@@ -22,8 +22,8 @@ const DESIGN_H = 456
 const FIT_CONTENT_W = 634
 const FIT_CONTENT_H = 880
 
-/** Multiply viewport-fitted scale (0.5 = half on-screen size). */
-const DISPLAY_SCALE_MULTIPLIER = 0.5
+/** Multiply viewport-fitted scale — higher = larger envelope + card at start. */
+const DISPLAY_SCALE_MULTIPLIER = 0.6
 
 const flipTransition = {
   duration: 0.55,

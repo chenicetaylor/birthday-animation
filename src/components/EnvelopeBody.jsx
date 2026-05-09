@@ -94,6 +94,9 @@ const INVITE_LAYOUT_ID = 'front-invite-focus'
 /** Expanded view: shift envelope left (design px) so it sits beside a viewport-centered card. */
 const ENVELOPE_EXPANDED_X = -440
 
+/** Back layer art width (px); frame is wider — center the invite on this, not the full frame. */
+const BACK_LAYER_WIDTH_PX = 624
+
 /** Corner radius for the in-envelope invite (design px; matches `width: 610px` layout). */
 const CARD_INVITE_CORNER_RADIUS_PX = 8
 /** Corner radius for the expanded (portal) invite in viewport px. */
@@ -579,7 +582,7 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
       <div
         style={{
           position: 'absolute',
-          left: '50%',
+          left: `${BACK_LAYER_WIDTH_PX / 2}px`,
           top: 0,
           width: '610px',
           height: '456px',
