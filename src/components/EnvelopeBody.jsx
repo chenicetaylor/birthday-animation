@@ -377,11 +377,10 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
     isCardExpanded &&
     typeof document !== 'undefined' &&
     createPortal(
-      <motion.div
+      // No `opacity` animation on this ancestor — iOS Safari flattens `preserve-3d` under
+      // animating opacity, which breaks `backface-visibility` and leaks the flip back face.
+      <div
         role="presentation"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.32, 1] }}
         style={{
           position: 'fixed',
           inset: 0,
@@ -455,6 +454,7 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
             }
             style={{
               transformStyle: 'preserve-3d',
+              WebkitTransformStyle: 'preserve-3d',
               cursor: 'pointer',
               border: 'none',
               outline: 'none',
@@ -465,6 +465,7 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
             <div
               style={{
                 perspective: 'min(1200px, 200vw)',
+                WebkitPerspective: 'min(1200px, 200vw)',
                 borderRadius: CARD_INVITE_EXPANDED_CORNER_RADIUS_PX,
               }}
             >
@@ -479,6 +480,7 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
                   maxHeight: 'min(86dvh, 900px)',
                   margin: '0 auto',
                   transformStyle: 'preserve-3d',
+                  WebkitTransformStyle: 'preserve-3d',
                   transformOrigin: 'center center',
                 }}
               >
@@ -490,6 +492,8 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    transform: 'translateZ(2px)',
+                    WebkitTransform: 'translateZ(2px)',
                     backfaceVisibility: 'hidden',
                     WebkitBackfaceVisibility: 'hidden',
                   }}
@@ -509,6 +513,10 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
                       userSelect: 'none',
                       pointerEvents: 'none',
                       boxShadow: 'none',
+                      transform: 'translateZ(0)',
+                      WebkitTransform: 'translateZ(0)',
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
                     }}
                   />
                 </div>
@@ -520,7 +528,8 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    transform: 'rotateY(180deg)',
+                    transform: 'rotateY(180deg) translateZ(2px)',
+                    WebkitTransform: 'rotateY(180deg) translateZ(2px)',
                     backfaceVisibility: 'hidden',
                     WebkitBackfaceVisibility: 'hidden',
                   }}
@@ -540,6 +549,10 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
                       userSelect: 'none',
                       pointerEvents: 'none',
                       boxShadow: 'none',
+                      transform: 'translateZ(0)',
+                      WebkitTransform: 'translateZ(0)',
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
                     }}
                   />
                 </div>
@@ -547,7 +560,7 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
             </div>
           </motion.div>
         </div>
-      </motion.div>,
+      </div>,
       document.body,
     )
 
