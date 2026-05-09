@@ -94,8 +94,11 @@ const INVITE_LAYOUT_ID = 'front-invite-focus'
 /** Expanded view: shift envelope left (design px) so it sits beside a viewport-centered card. */
 const ENVELOPE_EXPANDED_X = -440
 
-/** Back layer art width (px); frame is wider — center the invite on this, not the full frame. */
-const BACK_LAYER_WIDTH_PX = 624
+/** Frame width vs back-pocket art — center 624px layers in 634px so the card lines up with the pocket. */
+const ENVELOPE_FRAME_W_PX = 634
+const BACK_ART_W_PX = 624
+const BACK_ART_LEFT_PX = (ENVELOPE_FRAME_W_PX - BACK_ART_W_PX) / 2
+const BACK_ART_CENTER_X_PX = BACK_ART_LEFT_PX + BACK_ART_W_PX / 2
 
 /** Corner radius for the in-envelope invite (design px; matches `width: 610px` layout). */
 const CARD_INVITE_CORNER_RADIUS_PX = 8
@@ -359,13 +362,21 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
     inset: 0,
     width: '634px',
     height: '456px',
-    transformStyle: 'preserve-3d',
-    WebkitTransformStyle: 'preserve-3d',
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden',
     /** Let the invite animate above the slot without clipping (temp). */
     overflow: 'visible',
     transformOrigin: '50% 55%',
+  }
+
+  /** Nested 3D for flap / slot — `preserve-3d` stays off the flip face root (WebKit). */
+  const envelopeInner3dStyle = {
+    position: 'relative',
+    width: '634px',
+    height: '456px',
+    transformStyle: 'preserve-3d',
+    WebkitTransformStyle: 'preserve-3d',
+    overflow: 'visible',
   }
 
   const imageCommonStyle = {
@@ -381,10 +392,11 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
     isCardExpanded &&
     typeof document !== 'undefined' &&
     createPortal(
-      // No `opacity` animation on this ancestor — iOS Safari flattens `preserve-3d` under
-      // animating opacity, which breaks `backface-visibility` and leaks the flip back face.
-      <div
+      <motion.div
         role="presentation"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.32, 1] }}
         style={{
           position: 'fixed',
           inset: 0,
@@ -458,7 +470,6 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
             }
             style={{
               transformStyle: 'preserve-3d',
-              WebkitTransformStyle: 'preserve-3d',
               cursor: 'pointer',
               border: 'none',
               outline: 'none',
@@ -469,7 +480,6 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
             <div
               style={{
                 perspective: 'min(1200px, 200vw)',
-                WebkitPerspective: 'min(1200px, 200vw)',
                 borderRadius: CARD_INVITE_EXPANDED_CORNER_RADIUS_PX,
               }}
             >
@@ -484,7 +494,6 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
                   maxHeight: 'min(86dvh, 900px)',
                   margin: '0 auto',
                   transformStyle: 'preserve-3d',
-                  WebkitTransformStyle: 'preserve-3d',
                   transformOrigin: 'center center',
                 }}
               >
@@ -496,8 +505,6 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    transform: 'translateZ(2px)',
-                    WebkitTransform: 'translateZ(2px)',
                     backfaceVisibility: 'hidden',
                     WebkitBackfaceVisibility: 'hidden',
                   }}
@@ -517,10 +524,6 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
                       userSelect: 'none',
                       pointerEvents: 'none',
                       boxShadow: 'none',
-                      transform: 'translateZ(0)',
-                      WebkitTransform: 'translateZ(0)',
-                      backfaceVisibility: 'hidden',
-                      WebkitBackfaceVisibility: 'hidden',
                     }}
                   />
                 </div>
@@ -532,8 +535,7 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    transform: 'rotateY(180deg) translateZ(2px)',
-                    WebkitTransform: 'rotateY(180deg) translateZ(2px)',
+                    transform: 'rotateY(180deg)',
                     backfaceVisibility: 'hidden',
                     WebkitBackfaceVisibility: 'hidden',
                   }}
@@ -553,10 +555,6 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
                       userSelect: 'none',
                       pointerEvents: 'none',
                       boxShadow: 'none',
-                      transform: 'translateZ(0)',
-                      WebkitTransform: 'translateZ(0)',
-                      backfaceVisibility: 'hidden',
-                      WebkitBackfaceVisibility: 'hidden',
                     }}
                   />
                 </div>
@@ -564,7 +562,7 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
             </div>
           </motion.div>
         </div>
-      </div>,
+      </motion.div>,
       document.body,
     )
 
@@ -581,14 +579,15 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
         }
         transition={envelopeSideShiftTransition}
       >
+      <div style={envelopeInner3dStyle}>
       <img
         src={backLayer}
         alt="Envelope back"
         style={{
           ...imageCommonStyle,
           top: 0,
-          left: 0,
-          width: '624px',
+          left: `${BACK_ART_LEFT_PX}px`,
+          width: `${BACK_ART_W_PX}px`,
           height: '456px',
           zIndex: 10,
           transform: 'translateZ(0)',
@@ -599,7 +598,7 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
       <div
         style={{
           position: 'absolute',
-          left: `${BACK_LAYER_WIDTH_PX / 2}px`,
+          left: `${BACK_ART_CENTER_X_PX}px`,
           top: 0,
           width: '610px',
           height: '456px',
@@ -712,8 +711,8 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
         style={{
           ...imageCommonStyle,
           bottom: 0,
-          left: 0,
-          width: '624px',
+          left: `${BACK_ART_LEFT_PX}px`,
+          width: `${BACK_ART_W_PX}px`,
           height: 'auto',
           zIndex: 20,
           opacity: envelopeLayerOpacity,
@@ -726,7 +725,7 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
         style={{
           ...imageCommonStyle,
           top: 0,
-          left: 0,
+          left: `${BACK_ART_LEFT_PX}px`,
           height: '456px',
           width: 'auto',
           zIndex: 30,
@@ -740,7 +739,7 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
         style={{
           ...imageCommonStyle,
           top: 0,
-          right: '10px',
+          right: `${BACK_ART_LEFT_PX}px`,
           height: '456px',
           width: 'auto',
           zIndex: 40,
@@ -752,7 +751,7 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
         style={{
           position: 'absolute',
           top: 0,
-          left: '312px',
+          left: `${BACK_ART_CENTER_X_PX}px`,
           zIndex: isFlapOpened ? 12 : 50,
           transform: isFlapOpened
             ? 'translateX(-50%) translateZ(-56px)'
@@ -772,7 +771,7 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
             position: 'relative',
             top: 0,
             left: 0,
-            width: '624px',
+            width: `${BACK_ART_W_PX}px`,
             rotateX,
             transformOrigin: 'top center',
             transformStyle: 'preserve-3d',
@@ -798,6 +797,7 @@ function EnvelopeBody({ onBackInviteRevealActive }) {
             draggable={false}
           />
         </motion.div>
+      </div>
       </div>
     </motion.div>
     </LayoutGroup>

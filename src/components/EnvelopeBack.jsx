@@ -5,6 +5,11 @@ import rightFlap from '../assets/envelope/right-flap.svg'
 import bottomFlap from '../assets/envelope/bottom-flap.svg'
 import blankCard from '../assets/envelope/blank-card.png'
 
+/** Match `EnvelopeBody` — 624px art centered in 634px frame. */
+const ENVELOPE_FRAME_W_PX = 634
+const BACK_ART_W_PX = 624
+const BACK_ART_LEFT_PX = (ENVELOPE_FRAME_W_PX - BACK_ART_W_PX) / 2
+
 const labelStyle = {
   position: 'absolute',
   top: '50%',
@@ -38,8 +43,17 @@ function EnvelopeBack() {
   }
   const envelopeLayerOpacity = 0.99
 
+  const backArtStripStyle = {
+    position: 'absolute',
+    left: `${BACK_ART_LEFT_PX}px`,
+    top: 0,
+    width: `${BACK_ART_W_PX}px`,
+    height: '456px',
+  }
+
   return (
     <div style={frameStyle}>
+      <div style={backArtStripStyle}>
       <img
         src={topFlap}
         alt="Top flap"
@@ -140,6 +154,7 @@ function EnvelopeBack() {
         }}
         draggable="false"
       />
+      </div>
       <div style={labelStyle} aria-hidden="true">
         <div>to: My friend</div>
         <div>from: Chenice </div>

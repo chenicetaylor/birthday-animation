@@ -224,7 +224,6 @@ function App() {
           }
         }}
         style={{
-          perspective: '1000px',
           width: scaledW,
           height: scaledH,
           flexShrink: 0,
@@ -263,40 +262,35 @@ function App() {
               position: 'relative',
               width: DESIGN_W,
               height: DESIGN_H,
+              perspective: '1000px',
               transformStyle: 'preserve-3d',
               WebkitTransformStyle: 'preserve-3d',
               overflow: 'visible',
             }}
           >
             <motion.div
-              animate={{ rotateY: face === 'back' ? 0 : -180 }}
+              initial={false}
+              animate={{ rotateY: face === 'back' ? 0 : 180 }}
               transition={flipTransition}
               style={{
                 position: 'absolute',
                 inset: 0,
-                transformStyle: 'preserve-3d',
-                WebkitTransformStyle: 'preserve-3d',
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden',
                 transformOrigin: 'center center',
-                overflow: 'visible',
+                pointerEvents: face === 'back' ? 'auto' : 'none',
               }}
             >
               <EnvelopeBack />
             </motion.div>
             <motion.div
               key={envelopeResetKey}
-              animate={{ rotateY: face === 'back' ? 180 : 0 }}
+              initial={false}
+              animate={{ rotateY: face === 'back' ? -180 : 0 }}
               transition={flipTransition}
               style={{
                 position: 'absolute',
                 inset: 0,
-                transformStyle: 'preserve-3d',
-                WebkitTransformStyle: 'preserve-3d',
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden',
                 transformOrigin: 'center center',
-                overflow: 'visible',
+                pointerEvents: face === 'front' ? 'auto' : 'none',
               }}
             >
               <EnvelopeBody
